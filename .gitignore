@@ -43,9 +43,12 @@ data/processed/*
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 
-# Models (large files)
-*.joblib
-*.pkl
+# Models (large files only - allow neural network scaler)
+models/production/best_random_forest.joblib
+models/production/best_xgboost.joblib
+models/production/scaler.pkl
+models/experimental/*.joblib
+models/experimental/*.pkl
 *.h5
 *.model
 

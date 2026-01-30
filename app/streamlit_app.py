@@ -72,12 +72,39 @@ def main():
         
         st.subheader("🤖 Model Selection")
         
-        # Model category selection
-        model_category = st.radio(
-            "Model Type:",
-            options=["Traditional ML", "Neural Networks"],
-            help="Choose between traditional machine learning or deep learning models"
+        # Check which models are available
+        traditional_ml_available = (
+            Config.MODEL_RANDOM_FOREST.exists() and 
+            Config.MODEL_XGBOOST.exists()
         )
+        
+        neural_networks_available = (
+            (Config.MODEL_PRODUCTION_DIR / "neural_network_lstm.pt").exists() and
+            (Config.MODEL_PRODUCTION_DIR / "neural_network_scaler.pkl").exists()
+        )
+        
+        # Determine available options
+        model_category_options = []
+        if traditional_ml_available:
+            model_category_options.append("Traditional ML")
+        if neural_networks_available:
+            model_category_options.append("Neural Networks")
+        
+        # If no models available, show error
+        if not model_category_options:
+            st.error("⚠️ No models found! Please train models first.")
+            st.stop()
+        
+        # Model category selection (only show if both are available)
+        if len(model_category_options) > 1:
+            model_category = st.radio(
+                "Model Type:",
+                options=model_category_options,
+                help="Choose between traditional machine learning or deep learning models"
+            )
+        else:
+            model_category = model_category_options[0]
+            st.info(f"**Available:** {model_category} models only")
         
         # Model selection based on category
         if model_category == "Traditional ML":
@@ -178,27 +205,27 @@ def main():
                     # Make prediction
                     prediction, probability = detector.predict(url_input)
                     
-                    # Display result
+                    # Display result with color coding
                     if prediction == "Phishing":
-                        st.markdown(f"""
-                            <div class="result-box phishing">
-                                <h2>⚠️ PHISHING DETECTED</h2>
-                                <p style="font-size: 1.5rem; margin: 1rem 0;">
-                                    Confidence: {probability*100:.1f}%
-                                </p>
-                                <p>This URL appears to be malicious. Avoid clicking or entering credentials.</p>
-                            </div>
-                        """, unsafe_allow_html=True)
+                        st.error(f"""
+### ⚠️ PHISHING DETECTED
+
+**This URL appears to be malicious!**
+
+🔴 **Confidence:** {probability*100:.1f}%
+
+⚠️ **Warning:** Avoid clicking or entering credentials on this site.
+                        """)
                     else:
-                        st.markdown(f"""
-                            <div class="result-box legitimate">
-                                <h2>✅ LEGITIMATE</h2>
-                                <p style="font-size: 1.5rem; margin: 1rem 0;">
-                                    Confidence: {(1-probability)*100:.1f}%
-                                </p>
-                                <p>This URL appears to be safe.</p>
-                            </div>
-                        """, unsafe_allow_html=True)
+                        st.success(f"""
+### ✅ LEGITIMATE
+
+**This URL appears to be safe.**
+
+🟢 **Confidence:** {(1-probability)*100:.1f}%
+
+✓ **Status:** No phishing indicators detected.
+                        """)
                     
                     # Show URL details
                     with st.expander("🔬 View Technical Details"):

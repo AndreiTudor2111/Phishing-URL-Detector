@@ -43,10 +43,8 @@ data/processed/*
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 
-# Models (large files only - allow neural network scaler)
-models/production/best_random_forest.joblib
-models/production/best_xgboost.joblib
-models/production/scaler.pkl
+# Models (large files tracked by Git LFS - see .gitattributes)
+# Only exclude experimental models
 models/experimental/*.joblib
 models/experimental/*.pkl
 *.h5

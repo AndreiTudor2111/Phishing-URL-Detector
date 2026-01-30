@@ -304,8 +304,8 @@ This project is licensed under the MIT License.
 ## 👤 Author
 
 **Ostache Andrei Tudor**
-- Master's Program: Cyber Security
-- Institution: [Your Institution]
+- Master's Program: Information Management and Protection 
+- Institution: National University of Science and Technology Politehnica Bucharest
 
 ## 🙏 Acknowledgments
 
